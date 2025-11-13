@@ -8,6 +8,8 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -20,5 +22,16 @@ if(BUILD_TESTING)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
+
+add_executable(lidar_processor_node src/lidar_processor_node.cpp)
+
+
+ament_target_dependencies(lidar_processor_node rclcpp sensor_msgs std_msgs)
+
+
+install(TARGETS
+	lidar_processor_node
+	DESTINATION lib/${PROJECT_NAME}
+)
 
 ament_package()
