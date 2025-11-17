@@ -63,6 +63,10 @@ def generate_launch_description():
             )
     )
 
+    lidar_processor = Node(
+            package = "perception_pkg",
+            executable="lidar_processor_node",
+    )
 
 
     return LaunchDescription([
@@ -71,4 +75,5 @@ def generate_launch_description():
         gz_client,
         robot_state_publisher,
         spawn_entity,
+        lidar_processor
         ])

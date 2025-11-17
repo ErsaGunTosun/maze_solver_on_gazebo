@@ -507,48 +507,6 @@
             </link>
         </model>
 
-        <!-- Start Marker (Red) - sol üst açıklıkta -->
-        <model name="start_marker">
-            <static>true</static>
-            <pose>0.8 4 0.2 0 0 0</pose>
-            <link name="link">
-                <visual name="visual">
-                    <geometry>
-                        <cylinder>
-                            <radius>0.2</radius>
-                            <length>0.4</length>
-                        </cylinder>
-                    </geometry>
-                    <material>
-                        <ambient>1 0 0 1</ambient>
-                        <diffuse>1 0 0 1</diffuse>
-                        <emissive>0.8 0 0 1</emissive>
-                    </material>
-                </visual>
-            </link>
-        </model>
-
-        <!-- Finish Marker (Green) - sağ alt açıklıkta -->
-        <model name="finish_marker">
-            <static>true</static>
-            <pose>0.8 -4 0.2 0 0 0</pose>
-            <link name="link">
-                <visual name="visual">
-                    <geometry>
-                        <cylinder>
-                            <radius>0.2</radius>
-                            <length>0.4</length>
-                        </cylinder>
-                    </geometry>
-                    <material>
-                        <ambient>0 1 0 1</ambient>
-                        <diffuse>0 1 0 1</diffuse>
-                        <emissive>0 0.8 0 1</emissive>
-                    </material>
-                </visual>
-            </link>
-        </model>
-
     </world>
 </sdf>
 
