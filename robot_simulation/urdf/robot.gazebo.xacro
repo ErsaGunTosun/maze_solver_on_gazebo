@@ -42,11 +42,13 @@
         </plugin>
     </gazebo>
 
-      <gazebo reference="base_scan">
+    <gazebo reference="base_scan">
         <sensor name="gpu_lidar" type="gpu_ray">
             <topic>scan</topic>
             <update_rate>10</update_rate>
             <visualize>true</visualize>
+            <frame_id>base_scan</frame_id> 
+            <ignition_frame_id>base_scan</ignition_frame_id>
             <ray>
                 <scan>
                     <horizontal>
