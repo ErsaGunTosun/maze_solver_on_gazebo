@@ -47,7 +47,9 @@ private:
     float front, right, left, back;
     bool is_start = false;
     float min_front_distance = 0.45;
+    float min_side_difference = 0.20;
     double desired_yaw;
+    
 
     // odom 
     double start_x,start_y,start_yaw;
@@ -86,40 +88,35 @@ private:
     }
 
     void correct_heading(geometry_msgs::msg::Twist& velocity) {
-        // Mevcut açıyı derece cinsine çevir
         double current_deg = current_yaw * 180.0 / M_PI;
-        
-        // En yakın 90'ın katını bul (0, 90, -90, 180, -180)
         double nearest_90 = round(current_deg / 90.0) * 90.0;
         
-        // Hata hesapla (derece cinsinden)
         double error_deg = nearest_90 - current_deg;
         
-        // Eğer hata 5 dereceden fazlaysa düzelt
         if (fabs(error_deg) > 2.0) {
-            // Radyana çevir
             double error_rad = error_deg * M_PI / 180.0;
-            
-            // Düzeltme yap (max ±0.15 rad/s)
+        
             double correction = std::max(-0.15, std::min(0.15, error_rad * 0.3));
             velocity.angular.z = correction;
-            
-            RCLCPP_INFO(get_logger(),"Correction - current: %.1f°, target: %.1f°, error: %.1f°", 
-                        current_deg, nearest_90, error_deg);
         }
     }
    
 
     void control_loop(){
         
+        std::string state_str = (current_state == State::GO) ? "GO" : 
+                               (current_state == State::TURN_RIGHT) ? "TURN_RIGHT" : 
+                               (current_state == State::TURN_LEFT) ? "TURN_LEFT" : "STOP";
 
         auto velocity = geometry_msgs::msg::Twist();
 
         if(current_state == State::GO){
             double distance_traveled = sqrt(pow(current_x - start_x, 2) + pow(current_y - start_y, 2));
             
-            if (distance_traveled > 0.3) {
-                if (right > left && front > min_front_distance){
+            if (distance_traveled >= 0.3) {
+                if ((right - left) > min_side_difference && front > min_front_distance){
+                    RCLCPP_INFO(get_logger(),"SAĞA DÖNÜYOR! Distance: %.2f, Front: %.2f, Right: %.2f, Left: %.2f, Fark: %.2f", 
+                                distance_traveled, front, right, left, (right - left));
                     current_state = State::TURN_RIGHT;
                     start_yaw = current_yaw;
 
@@ -162,12 +159,9 @@ private:
         else if (current_state == State::TURN_RIGHT)
         {
             double delta_yaw = current_yaw - start_yaw;
-            
-
+        
             while (delta_yaw > M_PI) delta_yaw -= 2.0 * M_PI;
             while (delta_yaw < -M_PI) delta_yaw += 2.0 * M_PI;
-
-            RCLCPP_INFO(get_logger(),"%f",(delta_yaw));
 
             if (delta_yaw > -(M_PI / 2.0)) {
                 velocity.linear.x = 0.0;
