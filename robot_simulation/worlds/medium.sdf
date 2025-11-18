@@ -511,19 +511,19 @@
         <!-- Line 18: x1="66" y1="162" x2="114" y2="162" -->
         <model name="wall_h18">
             <static>true</static>
-            <pose>3.2 -8 0.5 0 0 0</pose>
+            <pose>3 -8 0.5 0 0 0</pose>
             <link name="link">
                 <collision name="collision">
                     <geometry>
                         <box>
-                            <size>4.8 0.1 1</size>
+                            <size>5.2 0.1 1</size>
                         </box>
                     </geometry>
                 </collision>
                 <visual name="visual">
                     <geometry>
                         <box>
-                            <size>4.8 0.1 1</size>
+                            <size>5.2 0.1 1</size>
                         </box>
                     </geometry>
                     <material>

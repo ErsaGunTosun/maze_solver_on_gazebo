@@ -1,4 +1,5 @@
 import os 
+import sys
 
 from ament_index_python.packages import get_package_share_directory
 from launch.actions import IncludeLaunchDescription
@@ -10,6 +11,20 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
+    spawn_positions = {
+        'easy': {'x': '0.0', 'y': '-3.5', 'z': '0.01', 'yaw': '1.57'},
+        'medium': {'x': '0.28', 'y': '-7.8', 'z': '0.01', 'yaw': '1.57'},
+        'hard': {'x': '0.0', 'y': '-8', 'z': '0.01', 'yaw': '1.57'}
+    }
+    
+    difficulty_value = 'easy'
+    for arg in sys.argv:
+        if arg.startswith('difficulty:='):
+            difficulty_value = arg.split(':=')[1]
+            break
+    
+    spawn_pos = spawn_positions.get(difficulty_value, spawn_positions['easy'])
+    
     difficulty_arg = DeclareLaunchArgument(
         'difficulty',
         default_value='easy',
@@ -60,7 +75,13 @@ def generate_launch_description():
     spawn_entity = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 os.path.join(launch_path,"spawn_entity.launch.py")
-            )
+            ),
+            launch_arguments={
+                'x': spawn_pos['x'],
+                'y': spawn_pos['y'],
+                'z': spawn_pos['z'],
+                'yaw': spawn_pos['yaw']
+            }.items()
     )
 
     lidar_processor = Node(
