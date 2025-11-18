@@ -76,7 +76,7 @@ private:
         float left_angle = M_PI / 2.0;     
         float back_angle = M_PI;           
         
-        float fov = 45.0 * M_PI / 180.0; 
+        float fov = 20.0 * M_PI / 180.0; 
         
         float front_dist = get_min_distance(scan, front_angle, fov);
         float right_dist = get_min_distance(scan, right_angle, fov);
