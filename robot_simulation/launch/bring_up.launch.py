@@ -36,6 +36,8 @@ def generate_launch_description():
     filename = [difficulty, TextSubstitution(text='.sdf')]
 
     package_share_dir = get_package_share_directory("robot_simulation")
+    mapping_share_dir = get_package_share_directory("mapping_pkg")
+    control_share_dir = get_package_share_directory("control_pkg")
 
     world_path = PathJoinSubstitution([
         package_share_dir,
@@ -89,6 +91,23 @@ def generate_launch_description():
             executable="lidar_processor_node",
     )
 
+    mapping_launch = IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                os.path.join(mapping_share_dir,"launch","map_visulator.launch.py")
+            ),
+            launch_arguments ={"gz_args": ["-s -r -v1 ", world_path]}.items()
+    )
+
+    wall_follower_node = Node(
+        package = "control_pkg",
+        executable="wall_follower_node",
+        name='wall_follower_node',
+        output='screen',
+        parameters = [{
+                "use_sim_time":True,
+        }]
+    )
+
 
     return LaunchDescription([
         difficulty_arg,
@@ -96,5 +115,7 @@ def generate_launch_description():
         gz_client,
         robot_state_publisher,
         spawn_entity,
-        lidar_processor
-        ])
+        lidar_processor,
+        mapping_launch,
+        wall_follower_node
+    ])
